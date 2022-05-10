@@ -1,0 +1,71 @@
+# Copyright (C) 2022 SuperAdmin
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+
+#
+# Generic
+#
+
+# Module label 'ModuleDoafipName'
+ModuleDoafipName = Doafip
+# Module description 'ModuleDoafipDesc'
+ModuleDoafipDesc = Doafip description
+textoboton = Desplegar tipo de factura
+btnfacturar = Facturar afip
+type= Tipo de factura a realizar
+typeA = Tipo de factura [A]
+typeB = Tipo de factura [B]
+typeC = Tipo de factura [C]
+
+msjErrorServerStatusConn = Error, verificar conexión de red.
+msjAfipServerStatus = Afip, estado del servidor ok.
+msjErrorServerStatusData = Error, verificar CUIT/CUIL configuración.
+msjWarningAserverAfip = Factura ya emitida.
+msjSuccesstAserverAfip = Factura realizada con exito.
+
+
+DoafipBoxDescription = Facturacion Afip
+
+
+#
+# Admin page
+#
+DoafipSetup = Doafip setup
+Settings = Settings
+DoafipSetupPage = Doafip | Pagina de Configuracion
+DOAFIP_MYPARAM0 = Inicio de Actividades
+DOAFIP_MYPARAM0Tooltip = Inicio de actividades. Se vera registrado en la factura.
+DOAFIP_MYPARAM1 = Punto de Venta
+DOAFIP_MYPARAM1Tooltip = Punto de venta creado en la Afip. Se vera registrado en la factura.
+DOAFIP_MYPARAM2=Otros Tributos
+DOAFIP_MYPARAM2Tooltip=Esta configuracion permite agregar el tributo a cada factura que enviamos a la Afip.Modifica añadiendo valor al precio final de facturacion. por defecto cero porciento.
+
+
+#
+# About page
+#
+About = About
+DoafipAbout = About Doafip
+DoafipAboutPage = Doafip about page
+
+#
+# Sample page
+#
+MyPageName = My page name
+
+#
+# Sample widget
+#
+MyWidget = Facturacion Afip
+MyWidgetDescription = Facturaracion afip Argentina.
