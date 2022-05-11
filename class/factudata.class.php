@@ -551,6 +551,31 @@ class FactuData extends CommonObject
 	
 	/**
 	 * 
+	 * @param int $x
+	 * @return string factura tipo A,B,C...
+	 */
+	public function ctetipo($x){
+		switch ($x) {
+			case 1:
+			return 'A';
+				break;
+			case 6:
+			return 'B';
+				break;
+			case 11:
+			return 'C';
+				break;
+			default:
+				return 'X';	;
+				break;
+		}
+	}
+	
+	
+	
+	
+	/**
+	 * 
 	 * @param int $idFacture
 	 * @return int Object id
 	 */

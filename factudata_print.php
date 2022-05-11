@@ -75,7 +75,7 @@ try {
         $invoice = new Facture($db);
         $invoice->fetch($facid);
         $printing = new pdf_afip($db);
-        $printing->write_file($invoice , $langs->loadLangs(array('bills', 'companies', 'compta', 'products', 'banks', 'main', 'withdrawals')) , '', 0, 0, 0);
+        $printing->write_file($invoice , $langs->loadLangs(array('bills', 'companies', 'compta', 'products', 'banks', 'main', 'withdrawals')) , '', 0, 0, 0, $factuDataId);
     }
 } catch (Exception $e) {
     print_r($e);
