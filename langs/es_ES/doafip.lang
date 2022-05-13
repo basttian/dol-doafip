@@ -69,3 +69,23 @@ MyPageName = My page name
 #
 MyWidget = Facturacion Afip
 MyWidgetDescription = Facturaracion afip Argentina.
+
+
+#
+#Facture
+#
+PDFAfipiDescription = Modelo de factura Afip - Argentina
+BillFrom = De
+BillTo = A
+
+
+
+
+
+
+
+
+
+
+
+

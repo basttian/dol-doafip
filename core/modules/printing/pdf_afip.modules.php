@@ -1,4 +1,6 @@
 <?php
+use Sabre\VObject\Property\VCard\LanguageTag;
+
 /* Copyright (C) 2004-2014  Laurent Destailleur     <eldy@users.sourceforge.net>
  * Copyright (C) 2005-2012  Regis Houssin           <regis.houssin@inodbox.com>
  * Copyright (C) 2008       Raphael Bertrand        <raphael.bertrand@resultic.fr>
@@ -148,7 +150,7 @@ class pdf_afip extends ModelePDFFactures
 
 		$this->db = $db;
 		$this->name = "afip";
-		$this->description = $langs->trans('Modelo de factura Afip - Argentina');
+		$this->description = $langs->trans('PDFAfipiDescription');
 		$this->update_main_doc_field = 1; // Save the name of generated file as the main doc when generating a doc with this template
 
 		// Dimension page
@@ -296,8 +298,7 @@ class pdf_afip extends ModelePDFFactures
 			}
 		}
 
-        $objfactudata = new FactuData($this->db);
-        $objfactudata->fetch($factudataObject);
+        
 
 		//if (count($realpatharray) == 0) $this->posxpicture=$this->posxtva;
 
@@ -968,6 +969,9 @@ class pdf_afip extends ModelePDFFactures
 					$posy = $this->drawPaymentsTable($pdf, $object, $posy, $outputlangs);
 				}
 
+				//Funcion mostrar cod de barras y CAe y Fcha Vto y otras hiervas.
+				$this->_rowfoot($pdf, $idFactudata);
+				
 				// Pagefoot
 				$this->_pagefoot($pdf, $object, $outputlangs);
 				if (method_exists($pdf, 'AliasNbPages')) {
@@ -1330,6 +1334,8 @@ class pdf_afip extends ModelePDFFactures
 			}
 		}
 
+		
+		
 		return $posy;
 	}
 
@@ -1831,6 +1837,8 @@ class pdf_afip extends ModelePDFFactures
 			 $resteapayer = 0;
 			 }
 			 */
+			
+			
 
 			$index++;
 			$pdf->SetTextColor(0, 0, 60);
@@ -1844,6 +1852,8 @@ class pdf_afip extends ModelePDFFactures
 			$pdf->SetTextColor(0, 0, 0);
 		}
 
+		
+		
 		$index++;
 		return ($tab2_top + ($tab2_hl * $index));
 	}
@@ -1921,6 +1931,9 @@ class pdf_afip extends ModelePDFFactures
 		if (empty($hidetop)) {
 			$pdf->line($this->marge_gauche, $tab_top + $this->tabTitleHeight, $this->page_largeur - $this->marge_droite, $tab_top + $this->tabTitleHeight); // line takes a position y in 2nd parameter and 4th parameter
 		}
+		
+		
+		
 	}
 
 	// phpcs:disable PEAR.NamingConventions.ValidFunctionName.PublicUnderscore
@@ -2057,7 +2070,6 @@ class pdf_afip extends ModelePDFFactures
 
 		$pdf->SetFont('', 'B', $default_font_size);
 
-		
 		 /*$posy += 5;
 		 $pdf->setX(202);
          $pdf->setY(20);
@@ -2239,7 +2251,7 @@ class pdf_afip extends ModelePDFFactures
 			$pdf->SetXY($posx + 2, $posy);
 			$pdf->SetFont('', '', $default_font_size - 1);
 			$pdf->MultiCell($widthrecbox - 2, 4, $carac_emetteur, 0, $ltrdirection);
-
+			
 			// If BILLING contact defined on invoice, we use it
 			$usecontact = false;
 			$arrayidcontact = $object->getIdContact('external', 'BILLING');
@@ -2285,13 +2297,23 @@ class pdf_afip extends ModelePDFFactures
 			$pdf->SetXY($posx + 2, $posy + 3);
 			$pdf->SetFont('', 'B', $default_font_size);
 			$pdf->MultiCell($widthrecbox - 2, 2, $carac_client_name, 0, $ltrdirection);
-
 			$posy = $pdf->getY();
 
 			// Show recipient information
 			$pdf->SetFont('', '', $default_font_size - 1);
 			$pdf->SetXY($posx + 2, $posy);
 			$pdf->MultiCell($widthrecbox - 2, 4, $carac_client, 0, $ltrdirection);
+			
+			// Show recipient cuit/cuil
+			$pdf->SetXY($posx + 2, $posy + 24);
+			$pdf->SetFont('', '', $default_font_size);
+			$pdf->MultiCell($widthrecbox - 2, 4, "CUIT / CUIL: ".$object->thirdparty->idprof1 , 0, $ltrdirection);
+			
+			// Show recipient tipo de persona
+			$pdf->SetXY($posx + 2, $posy + 28);
+			$pdf->SetFont('', '', $default_font_size);
+			$pdf->MultiCell($widthrecbox - 2, 4, "Cond. frente al IVA: ".$this->thirdpartyTypent($object->thirdparty->typent_id), 0, $ltrdirection);
+			
 		}
 
 		$pdf->SetTextColor(0, 0, 0);
@@ -2314,6 +2336,97 @@ class pdf_afip extends ModelePDFFactures
 		$showdetails = empty($conf->global->MAIN_GENERATE_DOCUMENTS_SHOW_FOOT_DETAILS) ? 0 : $conf->global->MAIN_GENERATE_DOCUMENTS_SHOW_FOOT_DETAILS;
 		return pdf_pagefoot($pdf, $outputlangs, 'INVOICE_FREE_TEXT', $this->emetteur, $this->marge_basse, $this->marge_gauche, $this->page_hauteur, $object, $showdetails, $hidefreetext);
     }
+    
+    /**
+     *  Pie de pagina afip datos
+     *
+     *  @param	TCPDF	$pdf    PDF
+     *  @param	int		id factudata 
+     *
+     */
+    protected function _rowfoot(&$pdf, $idfactudata = null)
+    {
+        $pdf->Ln(4);
+        /*
+        FchServDesde
+        FchServhasta
+        FchVtoPago
+        ------respuestas------
+        ResResultado
+        ResCodAutorizacion
+        ResEmisionTipo 
+        ResFchVto
+        ResFchProceso
+        ResBarCode 
+         */
+       
+        //OBJ FACTUDATA 
+        $objFactuData = new FactuData($this->db);
+        $objFactuData->fetch($idfactudata);
+        
+        if ($objFactuData->ResResultado == 'A') {
+            
+            $pdf->SetFont('', '', 8);
+            $pdf->SetTextColor(8, 8, 8);
+            
+            $txt = '';
+            
+            $pdf->MultiCell(30, 5, $objFactuData->ResEmisionTipo , 0, 'L', 0, 0, '', '', true, 0, false, true, 40, 'T');
+            $pdf->MultiCell(95, 5, $objFactuData->ResCodAutorizacion , 0, 'J', 0, 0, '', '', true, 0, false, true, 40, 'T');
+            $pdf->MultiCell(65, 5, $txt , 0, 'J', 0, 1, '', '', true, 0, false, true, 40, 'T');
+            
+            $pdf->MultiCell(30, 5, "Fecha Venc. " , 0, 'L', 0, 0, '', '', true, 0, false, true, 40, 'T');
+            $pdf->MultiCell(95, 5, $objFactuData->ResFchVto , 0, 'J', 0, 0, '', '', true, 0, false, true, 40, 'T');
+            $pdf->MultiCell(65, 5, $txt, 0, 'J', 0, 1, '', '', true, 0, false, true, 40, 'T');
+            
+            //$pdf->Ln(2);
+            
+            $style = array(
+                'position' => '', 
+                'align' => 'C',
+                'stretch' => false,
+                'fitwidth' => true,
+                'cellfitalign' => '',
+                'border' => false,
+                'hpadding' => 'auto',
+                'vpadding' => 'auto',
+                'fgcolor' => array(0,0,0),
+                'bgcolor' => false, //array(255,255,255),
+                'text' => true,
+                'font' => 'helvetica',
+                'fontsize' => 6,
+                'stretchtext' => 4
+            );
+            
+            //$pdf->Cell(0, 0, $this->emetteur->country_code, 1,1);
+            $pdf->write1DBarcode($objFactuData->ResBarCode, 'C128', '', '', '', 14, 0.4, $style, 'B');
+            
+            return 1;
+        }else{
+            $pdf->MultiCell(60, 8, "Respuesta del servidor ".$objFactuData->ResResultado, 0, 'L');
+            return 0;
+        }
+    }
+    
+    
+    /**
+     * Busca en la tabla c_typent el tipo de tercero
+     * @param Tipo de tercero $id
+     * @return string Label
+     */
+    public function thirdpartyTypent($id){
+    	$sql = "SELECT id, code, libelle";
+    	$sql .= " FROM ".MAIN_DB_PREFIX."c_typent";
+    	$sql .= " WHERE active = 1 AND id = ".$id." ";
+    	$resql = $this->db->query($sql);
+    	if ($resql) {
+    		$objp = $this->db->fetch_object($resql);
+    		return  $objp->libelle;
+    	}else{
+    		return null;
+    	}
+    }
+    
 
 	/**
 	 *  Define Array Column Field
