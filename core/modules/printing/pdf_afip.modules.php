@@ -133,7 +133,7 @@ class pdf_afip extends ModelePDFFactures
 	/**
 	 * @var array of document table columns
 	 */
-	public $cols;
+	public $cols; 
 
 
 	/**
