@@ -3,6 +3,20 @@
 ## Features
 
 Description of the module...
+<br />
+Facturar a Afip desde las facturas generadas en Dolibarr
+<br />
+<b>Usa libreria para conectarse a los web services de Afip </b>[ AfipSDK / afip.php ](https://github.com/AfipSDK/afip.php/blob/master/README.md)
+<br />
+Antes de comenzar .. <a href="https://www.afip.gob.ar/ws/WSAA/WSAA.ObtenerCertificado.pdf" target="_blank">Certificado Digital</a>
+<p>Sobreescribir los archivos Key y Cert de la carpeta ..doafip/lib/afip/Afip_res</p>
+<ul>
+<li>Activar el modulo en Dolibarr</li>
+<li>Ir a configuracion del modulo y activar solo la factura typo B</li>
+<li>El modulo necesita el CUIT de configuracion del sistema Dolibar</li>
+</ul>
+
+<br />
 
 <!--
 ![Screenshot doafip](img/screenshot_doafip.png?raw=true "Doafip"){imgmd}
@@ -76,6 +90,7 @@ From your browser:
 -->
 
 ## Licenses
+
 
 ### Main code
 

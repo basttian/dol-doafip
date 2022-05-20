@@ -130,8 +130,18 @@ function AlicuotasIVA($f) {
     //exit;
 };
 
+$factuData = new FactuData($db);
+$fkFactureExist = $factuData->record_exists($facid);
 
-try {  
+/**
+ * Verifica si la factura ya se emitio;
+ */
+if ($fkFactureExist) {
+	echo json_encode(array('success' => 0));
+	exit;
+}else{
+
+	try {  
 		///////
         if ($action == 'typeA' && !empty($facid)  ) {
            echo "A ".$facid;   
@@ -195,6 +205,7 @@ try {
         if ($action == 'typeC' && !empty($facid)  ) {
             echo "C ".$facid; 
         };
-} catch (Exception $e) {
-    echo json_encode(array('success' => 666,'code'=>$e->getCode(),'msj'=> $e->getMessage()));
+	} catch (Exception $e) {
+	    echo json_encode(array('success' => 666,'code'=>$e->getCode(),'msj'=> $e->getMessage()));
+	}
 }

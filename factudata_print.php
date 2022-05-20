@@ -65,6 +65,7 @@ $doafip = new FactuData($db);
 $doafip->fetch($factuDataId);
 
 
+
 /*
  * Actions
 */
@@ -77,6 +78,17 @@ try {
         $printing = new pdf_afip($db);
         $printing->write_file($invoice , $langs->loadLangs(array('bills', 'companies', 'compta', 'products', 'banks', 'main', 'withdrawals')) , '', 0, 0, 0, $factuDataId);
     }
+    
+    if($action == 'geturltkposbtn' && !empty($facid)){
+    	$invoice = new Facture($db);
+    	$invoice->fetch($facid);
+    	$factuData = new FactuData($db);
+    	$idFactudata = $factuData->searchIdAfipFromIdFacture($facid);
+
+    	$printing = new pdf_afip($db);
+    	$printing->write_file($invoice , $langs->loadLangs(array('bills', 'companies', 'compta', 'products', 'banks', 'main', 'withdrawals')) , '', 0, 0, 0, $idFactudata);
+    }
+    
 } catch (Exception $e) {
     print_r($e);
 }

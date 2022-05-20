@@ -82,7 +82,47 @@ class ActionsDoafip
 	public function getNomUrl($parameters, &$object, &$action)
 	{
 		global $db, $langs, $conf, $user;
+		
+		print'
 
+				<div id="ModalFact" class="modal">
+                <div class="modal-content">
+                <div class="modal-header">
+                <span class="close" onclick="CloseModal()" >&times;</span>
+                <h3>'.$langs->trans('type').'</h3>
+                </div>
+                <div class="modal-body">
+                <br>
+         ';  
+		if($conf->global->DOAFIP_FACTURA_A){
+			print '
+				<button style="padding: 32px;" class="block btn-type-a">'.$langs->trans('typeA').'</button>
+                <img style="display: none;" id="loader_a" src="../../custom/doafip/img/spinner.gif" height="25px">
+                <p></p>
+			';
+		}
+		if ($conf->global->DOAFIP_FACTURA_B) {
+			print '
+				<button style="padding: 32px;" class="block btn-type-b">'.$langs->trans('typeB').'</button>
+                <img style="display: none;" id="loader_b" src="../../custom/doafip/img/spinner.gif" height="25px">
+                <p></p>
+			';
+		}
+		if ($conf->global->DOAFIP_FACTURA_C) {
+			print '
+			<button style="padding: 32px;" class="block btn-type-c">'.$langs->trans('typeC').'</button>
+			<img style="display: none;" id="loader_c" src="../../custom/doafip/img/spinner.gif" height="25px"> 
+			';
+		}
+                
+		print '
+                </div>
+                <div class="modal-footer"></div>
+                <br>
+                </div>
+                </div>
+		';
+		
 		$this->resprints = '
                 <style>
                 .block {
@@ -96,27 +136,6 @@ class ActionsDoafip
                   text-align: center;
                 }
                 </style>
-                <div id="ModalFact" class="modal">
-                <div class="modal-content">
-                <div class="modal-header">
-                <span class="close" onclick="CloseModal()" >&times;</span>
-                <h3>'.$langs->trans('type').'</h3>
-                </div>
-                <div class="modal-body">
-                <br>
-                <button style="padding: 32px;" class="block btn-type-a">'.$langs->trans('typeA').'</button>
-                <img style="display: none;" id="loader_a" src="../../custom/doafip/img/spinner.gif" height="25px">
-                <p></p>
-                <button style="padding: 32px;" class="block btn-type-b">'.$langs->trans('typeB').'</button>
-                <img style="display: none;" id="loader_b" src="../../custom/doafip/img/spinner.gif" height="25px">
-                <p></p>
-                <button style="padding: 32px;" class="block btn-type-c">'.$langs->trans('typeC').'</button>
-                <img style="display: none;" id="loader_c" src="../../custom/doafip/img/spinner.gif" height="25px">            
-                </div>
-                <div class="modal-footer"><p></p></div>
-                <br>
-                </div>
-                </div>
                 ';
 		return 0;
 		
@@ -138,7 +157,8 @@ class ActionsDoafip
 		$error = 0; // Error counter
 
 		/* print_r($parameters); print_r($object); echo "action: " . $action; */
-		if (in_array($parameters['currentcontext'], array('invoicecard', 'globalcard'))) {	    // do something only for the context 'somecontext1' or 'somecontext2'
+		if (in_array($parameters['currentcontext'], array('invoicecard', 'globalcard'))) {	    
+			// do something only for the context 'somecontext1' or 'somecontext2'
 			// Do what you want here...
 			// You can for example call global vars like $fieldstosearchall to overwrite them, or update database depending on $action and $_POST values.
 		 
@@ -205,7 +225,129 @@ class ActionsDoafip
 		}
 	}
 
+	/**
+	 * 
+	 * Buton PRINT IN TAKEPOS
+	 * Generar factura electronica desde el TKPOS
+	 * 
+	 */
+	public function ActionButtons($parameters, &$object, &$action, $hookmanager)
+	{
+		global $conf, $user, $langs,$db;
 
+		$error = 0; // Error counter
+		
+		/* print_r($parameters); print_r($object); echo "action: " . $action; */
+		if (in_array($parameters['currentcontext'], array('takeposfrontend'))) {
+		  // do something only for the context 'somecontext1' or 'somecontext2'
+          $idinvoice = (GETPOST('invoiceid', 'int')? GETPOST('invoiceid', 'int') : 0);
+          //print '<div id="txtresult"></div>';
+          $typo_de_factura = $conf->global->DOAFIP_TAKE_POS_BTN_FACT_TYPE;
+          if($conf->global->DOAFIP_TAKE_POS_BTN){
+			?>
+			<script>
+            jQuery(document).ready(function() {
+            	$( "#invoiceid" ).keyup(function() {
+            	    var invoiceid = $( this ).val();
+            	  }).keyup();
+	 			$("<button class='button btntkpos' onclick='printAfipFromTkaPos(document.getElementById(\"invoiceid\").value)'><i class='fa fa-print'></i> Imprimir Factura Afip <img class=\"paddingright pictofixedwidth valignmiddle\" style=\"display: none;\" id=\"loader_button\" src=\"<?php echo DOL_URL_ROOT; ?>/custom/doafip/img/spinner.gif\"></button>").insertAfter(parent.$("div.row1withhead"));
+    		});
+   
+	 		//parent.$("div#poslines").load("invoice.php", function() {});
+				//$('').insertAfter(parent.$("div#poslines"));
+	            
+
+            
+             function printAfipFromTkaPos(id){
+            	 $('#loader_button').show();
+                 if(id == 0 || id === undefined || id === null ){
+                	 $('#loader_button').hide();
+                     alert("Debe generar la factura antes de enviar.");
+                 }
+                 if(id > 0){
+                	 $('#loader_button').show();
+					//console.log(id);
+                     $.post("<?php echo DOL_URL_ROOT; ?>/custom/doafip/tkpos.php?action=loadfacturerowid&token=<?php echo currentToken(); ?>",
+                        { invoiceid: id,},
+                           function(data, status){ 
+                               var jsonResp = JSON.parse(data);	
+                                   if( jsonResp.resultado ){
+                                        //console.log('AQUI CODIGO DE IMPRESION');
+                                        $.post("<?php echo DOL_URL_ROOT;?>/custom/doafip/doafipmodal.php?action=type<?php echo trim($typo_de_factura); ?>&token=<?php echo currentToken(); ?>",
+                                        	{ facid: id,},
+                                        	function(response, status){ 
+                                        	var jsonResp = JSON.parse(response);
+                                        	try{
+	                                        	switch (jsonResp.success) {
+	                    						case 1:
+	                    								//alert("Factura realizada con exito.")
+	                    								$.post("<?php echo DOL_URL_ROOT;?>/custom/doafip/factudata_print.php?action=geturltkposbtn&token=<?php echo currentToken(); ?>",
+	                                                        	{facid: id,},
+	                                                        	function(data, status){ 	
+	                                                        		var urlDown = JSON.parse(data);
+	                                        		        		openWindows(urlDown.url);
+	                                                                console.log(data);
+	                                                        		$('#loader_button').hide();
+	                                                    });
+	                    							break;
+	                    						case 0:
+		                    							$.post("<?php echo DOL_URL_ROOT;?>/custom/doafip/factudata_print.php?action=geturltkposbtn&token=<?php echo currentToken(); ?>",
+	                                                        	{facid: id,},
+	                                                        	function(data, status){ 	
+	                                                        		var urlDown = JSON.parse(data);
+	                                        		        		openWindows(urlDown.url);
+	                                                                console.log(data);
+	                                                        		$('#loader_button').hide();
+	                                                    });
+                                                    //$('#loader_button').hide();
+	                    							//alert("El comprobante se encuentra disponible en la lista de facturas ya emitidas.");
+	                    							break;
+	                    						case 666:
+	                    							    $('#loader_button').hide();
+	                		        					alert("ERROR "+jsonResp.msj);
+	                		        				break;
+	                    						default:
+	                    							break;
+	                    						}
+                    						}catch (e) {
+                    							alert("ERROR - El servidor rechazo la peticion. ");
+                    						}
+                                        	
+                                        });
+                                   }else{
+                                	    $('#loader_button').hide();
+										alert("La referencia no es valida, debe emitir la factura antes de continuar.");
+                                   }
+                            	}
+                           );
+                   }
+               };
+
+
+
+            function openWindows(url){
+   				var params = "location=no,toolbar=no,menubar=no,width=1200,height=1200,left=100,top=100";
+           		var newWindow = window.open('<?php echo DOL_URL_ROOT;?>/document.php?token=<?php echo currentToken(); ?>&modulepart=doafip&attachment=1&file='+url,'Afip', params);
+   			    return newWindow;
+   			}
+
+
+               
+	 		</script>
+			<?php
+			}
+		}
+		
+
+		if (!$error) {
+			return 0; // or return 1 to replace standard code&& jsonData.paye === undefined || jsonData.paye === null
+		} else {
+			$this->errors[] = 'Error message';
+			return -1;
+		}
+	}
+
+	
 	/**
 	 * Overloading the addMoreMassActions function : replacing the parent's function with the one below
 	 *
@@ -218,15 +360,15 @@ class ActionsDoafip
 	public function addMoreMassActions($parameters, &$object, &$action, $hookmanager)
 	{
 		global $conf, $user, $langs;
-
+		
 		$error = 0; // Error counter
 		$disabled = 1;
-
+		
 		/* print_r($parameters); print_r($object); echo "action: " . $action; */
-		if (in_array($parameters['currentcontext'], array('invoicecard', 'globalcard'))) {		// do something only for the context 'somecontext1' or 'somecontext2'
+		if (in_array($parameters['currentcontext'], array('somecontext1'))) {		// do something only for the context 'somecontext1' or 'somecontext2'
 			//$this->resprints = '<option value="0"'.($disabled ? ' disabled="disabled"' : '').'>'.$langs->trans("DoafipMassAction").'</option>';
 		}
-
+		
 		if (!$error) {
 			return 0; // or return 1 to replace standard code
 		} else {
@@ -234,8 +376,7 @@ class ActionsDoafip
 			return -1;
 		}
 	}
-
-
+	
 
 	/**
 	 * Execute action
@@ -607,3 +748,4 @@ $( document ).ready(function() {
 	
 	
 }
+

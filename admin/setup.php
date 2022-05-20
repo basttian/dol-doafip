@@ -1,4 +1,5 @@
 <?php
+date_default_timezone_set('America/Argentina/Buenos_Aires');
 /* Copyright (C) 2004-2017 Laurent Destailleur  <eldy@users.sourceforge.net>
  * Copyright (C) 2022 SuperAdmin
  *
@@ -56,6 +57,7 @@ global $langs, $user;
 require_once DOL_DOCUMENT_ROOT."/core/lib/admin.lib.php";
 require_once '../lib/doafip.lib.php';
 //require_once "../class/myclass.class.php";
+//require_once DOL_DOCUMENT_ROOT.'/core/class/html.formfile.class.php';
 
 require_once DOL_DOCUMENT_ROOT.'/product/class/product.class.php';
 
@@ -83,6 +85,11 @@ $arrayofparameters = array(
     'DOAFIP_MYPARAM0'=>array('type'=>'datetime','css'=>'minwidth250', 'enabled'=>1),//inicio de actividades
 	'DOAFIP_MYPARAM1'=>array('type'=>'string', 'css'=>'minwidth250' ,'enabled'=>1),//Punto de venta
 	'DOAFIP_MYPARAM2'=>array('type'=>'tva','enabled'=>1),//Otros tributos
+	'DOAFIP_FACTURA_A'=>array('type'=>'yesno','enabled'=>1),
+	'DOAFIP_FACTURA_B'=>array('type'=>'yesno','enabled'=>1),
+	'DOAFIP_FACTURA_C'=>array('type'=>'yesno','enabled'=>1),
+	'DOAFIP_TAKE_POS_BTN'=>array('type'=>'yesno','enabled'=>1),
+	'DOAFIP_TAKE_POS_BTN_FACT_TYPE'=>array('type'=>'facturetipo','enabled'=>1),
 	//'DOAFIP_MYPARAM2'=>array('type'=>'textarea','enabled'=>1),
 	//'DOAFIP_MYPARAM3'=>array('type'=>'category:'.Categorie::TYPE_CUSTOMER, 'enabled'=>1),
 	//'DOAFIP_MYPARAM4'=>array('type'=>'emailtemplate:thirdparty', 'enabled'=>1),
@@ -229,12 +236,17 @@ print dol_get_fiche_head($head, 'settings', $langs->trans($page_name), -1, "doaf
 
 echo '<span class="opacitymedium">'.$langs->trans("DoafipSetupPage").'</span><br><br>';
 
+//print '<div class="fichecenter"><div class="fichethirdleft">';
+//LEFT 
+
 
 if ($action == 'edit') {
 	print '<form method="POST" action="'.$_SERVER["PHP_SELF"].'">';
 	print '<input type="hidden" name="token" value="'.newToken().'">';
 	print '<input type="hidden" name="action" value="update">';
 
+	
+	
 	print '<table class="noborder centpercent">';
 	print '<tr class="liste_titre"><td class="titlefield">'.$langs->trans("Parameter").'</td><td>'.$langs->trans("Value").'</td></tr>';
 
@@ -256,14 +268,21 @@ if ($action == 'edit') {
 				$doleditor->Create();
 			} elseif ($val['type'] == 'yesno') {
 				print $form->selectyesno($constname, $conf->global->{$constname}, 1);
-			} elseif ($val['type'] == 'datetime') {
-			    print $form->selectDate(-1,$constname,0,0,0,'',1,1); 
+			} 
+			//SELECT START ACTIVITIES
+			elseif ($val['type'] == 'datetime') {
+			    $day = dol_stringtotime($conf->global->{$constname},0);
+				print $form->selectDate($day,$constname,0,0,0,'',1,0,0,'','','','',1,'','','auto');
+				//print $day;
 			} elseif ($val['type'] == 'tva') {
 			    print $form->load_tva($constname,'8.5 (NOO)','','',0,0,'',false,0);	
-			} elseif (preg_match('/emailtemplate:/', $val['type'])) {
+			}
+			//SELECT TIPO DE FACTURA
+			elseif ($val['type'] == 'facturetipo') {
+				$array = array('A'=>'A', 'B'=>'B', 'C'=>'C');
+				print $form->selectarray($constname,$array,$conf->global->{$constname},0,0,1);
+			}elseif (preg_match('/emailtemplate:/', $val['type'])) {
 				include_once DOL_DOCUMENT_ROOT . '/core/class/html.formmail.class.php';
-				$formmail = new FormMail($db);
-
 				$tmp = explode(':', $val['type']);
 				$nboftemplates = $formmail->fetchAllEMailTemplate($tmp[1], $user, null, 1); // We set lang=null to get in priority record with no lang
 				//$arraydefaultmessage = $formmail->getEMailTemplate($db, $tmp[1], $user, null, 0, 1, '');
@@ -317,7 +336,7 @@ if ($action == 'edit') {
 					$selected = (empty($conf->global->$constname) ? '' : $conf->global->$constname);
 					$form->select_produits($selected, $constname, '', 0);
 				}
-			} else {
+			}else {
 				print '<input name="'.$constname.'"  class="flat '.(empty($val['css']) ? 'minwidth200' : $val['css']).'" value="'.$conf->global->{$constname}.'">';
 			}
 			print '</td></tr>';
@@ -400,6 +419,7 @@ if ($action == 'edit') {
 		}
 
 		print '</table>';
+		
 
 		print '<div class="tabsAction">';
 		print '<a class="butAction" href="'.$_SERVER["PHP_SELF"].'?action=edit">'.$langs->trans("Modify").'</a>';
@@ -409,6 +429,10 @@ if ($action == 'edit') {
 	}
 }
 
+
+//print '</div></div><div class="fichetwothirdright"><div class="ficheaddleft">';
+
+//print '</div</div>';
 
 $moduledir = 'doafip';
 $myTmpObjects = array();

@@ -175,9 +175,9 @@ class doafipwidget1 extends ModeleBoxes
 	        while ($line < $num) {
 	            $objp = $this->db->fetch_object($result);
 	            
-	            $facturestatic->id = $objp->fk_soc;
+	            $societestatic->id = $objp->fk_soc;
 	            $facturestatic->ref = $objp->ref;
-	            $societestatic->id = $objp->fk_facture;
+	            $facturestatic->id = $objp->fk_facture;
 	            $societestatic->name = $objp->nom;
 	            
 	            $doafipfacturestatic->id = $objp->rowid;
@@ -198,11 +198,13 @@ class doafipwidget1 extends ModeleBoxes
 	            $this->info_box_contents[$line][] = array(
 	                'td' => 'class="left" width="%30"',
 	                'text' => $societestatic->getNomUrl(1),
+	                'text2' =>" ".$societestatic->ref,
 	                'asis' => 1,
 	            );
 	            $this->info_box_contents[$line][] = array(
 	                'td' => 'class="left" width="%30"',
 	                'text' => $facturestatic->getNomUrl(1),
+	                'text2' =>" ".$facturestatic->name,
 	                'asis' => 1,
 	            );
 	            $this->info_box_contents[$line][] = array(

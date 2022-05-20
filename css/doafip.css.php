@@ -185,3 +185,10 @@ div.mainmenu.doafip {
 .highlight {
    background: yellow;
  }
+ 
+.btntkpos{
+	width:calc(33.33% - 2px);
+	//height:calc(15% - 2px);
+}
+ 
+ 

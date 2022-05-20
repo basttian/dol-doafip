@@ -450,6 +450,15 @@ class pdf_afip extends ModelePDFFactures
 					$pdf->write2DBarcode($qrcodestring, 'QRCODE,M', $this->marge_gauche, $tab_top - 5, 25, 25, $styleQr, 'N');
 					$extra_under_address_shift += 25;
 				}
+				
+				//Fecha de periodo Desde Hasta y Fecha de Vencimiento
+				//OBJ FACTUDATA
+				$objFactuData = new FactuData($this->db);
+				$objFactuData->fetch($idFactudata);
+				$pdf->MultiCell(65,0,"Periodo Facturado Desde: ". dol_print_date($this->db->jdate($objFactuData->FchServDesde),"%d/%m/%Y"), 0, 'C', 1, 0, '', '', true);
+				$pdf->MultiCell(60,0,"Hasta: ". dol_print_date($this->db->jdate($objFactuData->FchServHasta),"%d/%m/%Y"), 0, 'C', 1, 0, '', '', true);
+				$pdf->MultiCell(65,0,"Fecha de Vto. para el pago: ". dol_print_date($this->db->jdate($objFactuData->FchVtoPago),"%d/%m/%Y"), 0, 'C', 1, 0, '', '', true);
+				$extra_under_address_shift += 5;
 
 				// Call hook printUnderHeaderPDFline
 				$parameters = array(
@@ -2348,9 +2357,9 @@ class pdf_afip extends ModelePDFFactures
     {
         $pdf->Ln(4);
         /*
-        FchServDesde
-        FchServhasta
-        FchVtoPago
+        Periodo Facturado Desde:   	FchServDesde
+        Hasta: 						FchServHasta
+        Fecha de Vto. para el pago: FchVtoPago //Verificar este valor a enviar ;)
         ------respuestas------
         ResResultado
         ResCodAutorizacion
@@ -2376,7 +2385,7 @@ class pdf_afip extends ModelePDFFactures
             $pdf->MultiCell(65, 5, $txt , 0, 'J', 0, 1, '', '', true, 0, false, true, 40, 'T');
             
             $pdf->MultiCell(30, 5, "Fecha Venc. " , 0, 'L', 0, 0, '', '', true, 0, false, true, 40, 'T');
-            $pdf->MultiCell(95, 5, $objFactuData->ResFchVto , 0, 'J', 0, 0, '', '', true, 0, false, true, 40, 'T');
+            $pdf->MultiCell(95, 5, dol_print_date($this->db->jdate($objFactuData->ResFchVto),"%d/%m/%Y") , 0, 'J', 0, 0, '', '', true, 0, false, true, 40, 'T');
             $pdf->MultiCell(65, 5, $txt, 0, 'J', 0, 1, '', '', true, 0, false, true, 40, 'T');
             
             //$pdf->Ln(2);

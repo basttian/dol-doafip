@@ -105,7 +105,7 @@ class FactuData extends CommonObject
 		'fk_project' => array('type'=>'integer:Project:projet/class/project.class.php:1', 'label'=>'Project', 'enabled'=>'1', 'position'=>52, 'notnull'=>-1, 'visible'=>-1, 'noteditable'=>'1', 'index'=>1,),
 		'note_public' => array('type'=>'html', 'label'=>'NotePublic', 'enabled'=>'1', 'position'=>61, 'notnull'=>0, 'visible'=>0,),
 		'note_private' => array('type'=>'html', 'label'=>'NotePrivate', 'enabled'=>'1', 'position'=>62, 'notnull'=>0, 'visible'=>0,),
-		'date_creation' => array('type'=>'datetime', 'label'=>'DateCreation', 'enabled'=>'1', 'position'=>500, 'notnull'=>1, 'visible'=>-2,),
+		'date_creation' => array('type'=>'datetime', 'label'=>'DateCreation', 'enabled'=>'1', 'position'=>500, 'notnull'=>1, 'visible'=>-2, 'default'=>'dol_now()', 'comment'=>"Dia de creacion"),
 		'tms' => array('type'=>'timestamp', 'label'=>'DateModification', 'enabled'=>'1', 'position'=>501, 'notnull'=>0, 'visible'=>-2,),
 		'fk_user_creat' => array('type'=>'integer:User:user/class/user.class.php', 'label'=>'UserAuthor', 'enabled'=>'1', 'position'=>510, 'notnull'=>-1, 'visible'=>-2,),
 		'fk_user_modif' => array('type'=>'integer:User:user/class/user.class.php', 'label'=>'UserModif', 'enabled'=>'1', 'position'=>511, 'notnull'=>-1, 'visible'=>-2,),
@@ -122,7 +122,7 @@ class FactuData extends CommonObject
 		'CbteDesde' => array('type'=>'integer', 'label'=>'CbteDesde', 'enabled'=>'1', 'position'=>10007, 'notnull'=>0, 'visible'=>1, 'noteditable'=>'1', 'comment'=>"CbteDesde"),
 		'CbteHasta' => array('type'=>'integer', 'label'=>'CbteHasta', 'enabled'=>'1', 'position'=>10008, 'notnull'=>0, 'visible'=>1, 'noteditable'=>'1', 'comment'=>"CbteHasta"),
 		'CbteFch' => array('type'=>'varchar(255)', 'label'=>'CbteFch', 'enabled'=>'1', 'position'=>10009, 'notnull'=>0, 'visible'=>1, 'noteditable'=>'1', 'comment'=>"CbteFch"),
-		'ImpTotal' => array('type'=>'double(24,2)', 'label'=>'ImpTotal', 'enabled'=>'1', 'position'=>10010, 'notnull'=>0, 'visible'=>1, 'noteditable'=>'1', 'comment'=>"ImpTotal"),
+		'ImpTotal' => array('type'=>'double(24,2)', 'label'=>'ImpTotal', 'enabled'=>'1', 'position'=>10010, 'notnull'=>0, 'visible'=>1, 'noteditable'=>'1', 'isameasure'=>'1', 'css'=>'right', 'cssview'=>'right', 'comment'=>"ImpTotal"),
 		'ImpTotConc' => array('type'=>'double(24,2)', 'label'=>'ImpTotConc', 'enabled'=>'1', 'position'=>10011, 'notnull'=>0, 'visible'=>1, 'noteditable'=>'1', 'comment'=>"ImpTotConc"),
 		'ImpNeto' => array('type'=>'double(24,2)', 'label'=>'ImpNeto', 'enabled'=>'1', 'position'=>10012, 'notnull'=>0, 'visible'=>1, 'noteditable'=>'1', 'comment'=>"ImpNeto"),
 		'ImpOpEx' => array('type'=>'double(24,2)', 'label'=>'ImpOpEx', 'enabled'=>'1', 'position'=>10013, 'notnull'=>0, 'visible'=>1, 'noteditable'=>'1', 'comment'=>"ImpOpEx"),
@@ -150,12 +150,12 @@ class FactuData extends CommonObject
 		'CompradoresDocTipo' => array('type'=>'integer', 'label'=>'CompradoresDocTipo', 'enabled'=>'1', 'position'=>60001, 'notnull'=>0, 'visible'=>1, 'noteditable'=>'1', 'comment'=>"Comprador - Tipo de Documento"),
 		'CompradoresDocNro' => array('type'=>'varchar(80)', 'label'=>'CompradoresDocNro', 'enabled'=>'1', 'position'=>60002, 'notnull'=>0, 'visible'=>1, 'noteditable'=>'1', 'comment'=>"Comprador - Numero de documento"),
 		'CompradoresPorcentaje' => array('type'=>'double(24,2)', 'label'=>'CompradoresPorcentaje', 'enabled'=>'1', 'position'=>60003, 'notnull'=>0, 'visible'=>1, 'noteditable'=>'1', 'comment'=>"Comprador - Porcentaje de titularidad del comprador"),
-		'ResResultado' => array('type'=>'varchar(128)', 'label'=>'Resultado', 'enabled'=>'1', 'position'=>70001, 'notnull'=>0, 'visible'=>1, 'noteditable'=>'1', 'index'=>1, 'searchall'=>1, 'css'=>'left', 'comment'=>"Resultado A Aprobado"),
-		'ResCodAutorizacion' => array('type'=>'varchar(255)', 'label'=>'Cod. Autorizacion', 'enabled'=>'1', 'position'=>70002, 'notnull'=>0, 'visible'=>1, 'noteditable'=>'1', 'index'=>1, 'searchall'=>1, 'css'=>'left', 'comment'=>"Resultado Cod. Autirizacion"),
-		'ResEmisionTipo' => array('type'=>'varchar(128)', 'label'=>'Tipo de emision', 'enabled'=>'1', 'position'=>70003, 'notnull'=>0, 'visible'=>1, 'noteditable'=>'1', 'index'=>1, 'searchall'=>1, 'css'=>'left', 'comment'=>"Resultado tipo de emision"),
-		'ResFchVto' => array('type'=>'varchar(128)', 'label'=>'Fecha de vencimiento', 'enabled'=>'1', 'position'=>70004, 'notnull'=>0, 'visible'=>1, 'noteditable'=>'1', 'index'=>1, 'searchall'=>1, 'css'=>'left', 'comment'=>"Respuesta Fecha de vencimiento"),
-		'ResFchProceso' => array('type'=>'varchar(128)', 'label'=>'Fecha Proceso', 'enabled'=>'1', 'position'=>70005, 'notnull'=>0, 'visible'=>1, 'noteditable'=>'1', 'index'=>1, 'searchall'=>1, 'css'=>'left', 'comment'=>"Respuesta fecha de proceso"),
-		'ResBarCode' => array('type'=>'varchar(255)', 'label'=>'Cod. Barras', 'enabled'=>'1', 'position'=>70006, 'notnull'=>0, 'visible'=>1, 'noteditable'=>'1', 'index'=>1, 'searchall'=>1, 'css'=>'left', 'comment'=>"Codigo de Barras de Factura"),
+		'ResResultado' => array('type'=>'varchar(128)', 'label'=>'Resultado', 'enabled'=>'1', 'position'=>70001, 'notnull'=>0, 'visible'=>1, 'noteditable'=>'1', 'index'=>1, 'searchall'=>1, 'css'=>'left', 'cssview'=>'right', 'comment'=>"Resultado A Aprobado"),
+		'ResCodAutorizacion' => array('type'=>'varchar(255)', 'label'=>'Cod. Autorizacion', 'enabled'=>'1', 'position'=>70002, 'notnull'=>0, 'visible'=>1, 'noteditable'=>'1', 'index'=>1, 'searchall'=>1, 'css'=>'left', 'cssview'=>'right', 'comment'=>"Resultado Cod. Autirizacion"),
+		'ResEmisionTipo' => array('type'=>'varchar(128)', 'label'=>'Tipo de emision', 'enabled'=>'1', 'position'=>70003, 'notnull'=>0, 'visible'=>1, 'noteditable'=>'1', 'index'=>1, 'searchall'=>1, 'css'=>'left', 'cssview'=>'right', 'comment'=>"Resultado tipo de emision"),
+		'ResFchVto' => array('type'=>'varchar(128)', 'label'=>'Fecha de vencimiento', 'enabled'=>'1', 'position'=>70004, 'notnull'=>0, 'visible'=>1, 'noteditable'=>'1', 'index'=>1, 'searchall'=>1, 'css'=>'left', 'cssview'=>'right', 'comment'=>"Respuesta Fecha de vencimiento"),
+		'ResFchProceso' => array('type'=>'varchar(128)', 'label'=>'Fecha Proceso', 'enabled'=>'1', 'position'=>70005, 'notnull'=>0, 'visible'=>1, 'noteditable'=>'1', 'index'=>1, 'searchall'=>1, 'css'=>'left', 'cssview'=>'right', 'comment'=>"Respuesta fecha de proceso"),
+		'ResBarCode' => array('type'=>'varchar(255)', 'label'=>'Cod. Barras', 'enabled'=>'1', 'position'=>70006, 'notnull'=>0, 'visible'=>1, 'noteditable'=>'1', 'index'=>1, 'searchall'=>1, 'css'=>'left', 'cssview'=>'right', 'comment'=>"Codigo de Barras de Factura"),
 		'fk_facture' => array('type'=>'integer:Facture:compta/facture/class/facture.class.php', 'label'=>'Id Factura', 'enabled'=>'1', 'position'=>10000, 'notnull'=>1, 'visible'=>1, 'noteditable'=>'1', 'comment'=>"Clave Foranea Factura"),
 	);
 	public $rowid;
@@ -616,7 +616,7 @@ class FactuData extends CommonObject
 	}
 	
 	/**
-	 *
+	 * Verifica si fue emitida la factura en la base de datos Doafip
 	 * @param int $fkFactureId
 	 * @return boolean
 	 */

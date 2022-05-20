@@ -18,7 +18,7 @@
 #
 
 # Module label 'ModuleDoafipName'
-ModuleDoafipName = Doafip
+ModuleDoafipName = Afip
 # Module description 'ModuleDoafipDesc'
 ModuleDoafipDesc = Doafip description
 
@@ -49,5 +49,5 @@ MyPageName = My page name
 #
 # Sample widget
 #
-MyWidget = My widget
-MyWidgetDescription = My widget description
+MyWidget = Facturacion Afip
+MyWidgetDescription = Facturaracion afip Argentina.

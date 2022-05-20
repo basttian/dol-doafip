@@ -98,6 +98,7 @@ print load_fiche_titre($langs->trans("DoafipArea"), '', 'doafip.png@doafip');
 print '<div class="fichecenter"><div class="fichethirdleft">';
 
 
+
 /* BEGIN MODULEBUILDER DRAFT MYOBJECT
 // Draft MyObject
 if (! empty($conf->doafip->enabled) && $user->rights->doafip->read)
