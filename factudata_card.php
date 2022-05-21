@@ -344,6 +344,7 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 		*/
 		$formconfirm = $form->formconfirm($_SERVER["PHP_SELF"].'?id='.$object->id, $langs->trans('XXX'), $text, 'confirm_xxx', $formquestion, 0, 1, 220);
 	}
+	
 
 	// Call Hook formConfirm
 	$parameters = array('formConfirm' => $formconfirm, 'lineid' => $lineid);
@@ -405,9 +406,21 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 
 	print '<div class="fichecenter">';
 	print '<div class="fichehalfleft">';
+	
 	print '<div class="underbanner clearboth"></div>';
+	
 	print '<table class="border centpercent tableforfield">'."\n";
 
+	print '<tr><td>';
+	//Factudata
+	require_once DOL_DOCUMENT_ROOT.'/compta/facture/class/facture.class.php';
+	$invoice = new Facture($db);
+	$invoice->fetch($object->fk_facture);
+	$relativepath = $invoice->ref.'/'.$invoice->ref.'.pdf';
+	print $formfile->showPreview($invoice->ref,'doafip',$relativepath, $ruleforpicto = 0, $param = '');
+	
+	print '&nbsp; Ver documento pdf.</td></tr>';
+	
 	// Common attributes
 	//$keyforbreak='fieldkeytoswitchonsecondcolumn';	// We change column just before this field
 	//unset($object->fields['fk_project']);				// Hide field already shown in banner
@@ -476,7 +489,6 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 		print "</form>\n";
 	}
 
-
 	// Buttons for actions
 
 	if ($action != 'presend' && $action != 'editline') {
@@ -532,6 +544,7 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 
 			// Delete (need delete permission, or if draft, just need create/modify permission)
 			//print dolGetButtonAction($langs->trans('Delete'), '', 'delete', $_SERVER['PHP_SELF'].'?id='.$object->id.'&action=delete&token='.newToken(), '', $permissiontodelete || ($object->status == $object::STATUS_DRAFT && $permissiontoadd));
+
 		}
 		print '</div>'."\n";
 	}
@@ -560,6 +573,8 @@ if ($object->id > 0 && (empty($action) || ($action != 'edit' && $action != 'crea
 		}
 
 		// Show links to link elements
+		
+		
 		$linktoelem = $form->showLinkToObjectBlock($object, null, array('factudata'));
 		$somethingshown = $form->showLinkedObjectBlock($object, $linktoelem);
 
