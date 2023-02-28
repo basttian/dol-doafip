@@ -42,6 +42,7 @@ require_once DOL_DOCUMENT_ROOT.'/compta/facture/class/facture.class.php';
 require_once 'lib/doafip.lib.php';
 require_once 'class/factudata.class.php';
 
+global $conf; //v16.04
 
 // Load translation files required by the page
 $langs->loadLangs(array("doafip@doafip"));
@@ -62,7 +63,7 @@ if (isset($user->socid) && $user->socid > 0) {
 */
 
 $facid = GETPOST('facid', 'int');
-$afip = new Afip(array('CUIT' => $conf->global->MAIN_INFO_SIREN ));
+$afip = new Afip(array('CUIT' => (int)$conf->global->MAIN_INFO_SIREN )); //v16.04
 
 $invoice = new Facture($db);
 $invoice->fetch($facid);
