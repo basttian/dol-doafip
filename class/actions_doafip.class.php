@@ -600,7 +600,7 @@ $( document ).ready(function() {
 				var facid = <?php echo $object->id; ?>;
 				$.ajax({
 			        type: 'POST',
-			        url: '<?php echo DOL_URL_ROOT;?>/custom/doafip/doafipmodal.php?action=typeA',
+			        url: '<?php echo DOL_URL_ROOT;?>/custom/doafip/doafipmodal.php?action=typeA&token=<?php echo newToken();?>',
 			        data:{facid: facid},
 			        success: function(data) {
 			        	$('#loader_a').hide();
@@ -621,7 +621,7 @@ $( document ).ready(function() {
 				var facid = <?php echo $object->id; ?>;
 				$.ajax({
 			        type: 'POST',
-			        url: '<?php echo DOL_URL_ROOT;?>/custom/doafip/doafipmodal.php?action=typeB',
+			        url: '<?php echo DOL_URL_ROOT;?>/custom/doafip/doafipmodal.php?action=typeB&token=<?php echo newToken();?>',
 			        data:{facid: facid},
 			        success: function(response) {
 			        	$('#loader_b').hide();
@@ -664,7 +664,7 @@ $( document ).ready(function() {
 				var facid = <?php echo $object->id; ?>;
 				$.ajax({
 			        type: 'POST',
-			        url: '<?php echo DOL_URL_ROOT;?>/custom/doafip/doafipmodal.php?action=typeC',
+			        url: '<?php echo DOL_URL_ROOT;?>/custom/doafip/doafipmodal.php?action=typeC&token=<?php echo newToken();?>',
 			        data:{facid: facid},
 			        success: function(data) {
 			        	$('#loader_c').hide();
@@ -691,7 +691,7 @@ $( document ).ready(function() {
 	        	$.ajax({
 		        type: 'POST',
 		        //url: '<?php echo DOL_URL_ROOT;?>/custom/doafip/doafippdf.php?action=printfactur',
-                url: '<?php echo DOL_URL_ROOT;?>/custom/doafip/factudata_print.php?action=printfactur',
+                url: '<?php echo DOL_URL_ROOT;?>/custom/doafip/factudata_print.php?action=printfactur&token=<?php echo newToken();?>',
 		        data:{factuDataId: factuDataId, facid: facid},
 		        success: function(data){
 		        		var urlDown = JSON.parse(data);
